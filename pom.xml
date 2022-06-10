@@ -8,6 +8,7 @@
 	<packaging>pom</packaging>
 	
 	<properties>
+		<sonar.projectKey>microservices-open-source_base-microservices</sonar.projectKey>
 		<sonar.organization>microservices-open-source</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
