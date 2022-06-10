@@ -1,0 +1,73 @@
+server:
+  port: 1002
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://richard:richard@localhost:1001/eureka/
+
+logging:
+  pattern: 
+    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+              
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: internal-service
+        uri: lb://internal-service
+        predicates:
+        - Path=/internal/**
+        filters:
+        - RewritePath=/internal/(?<path>.*), /$\{path}
+      - id: openapi
+        uri: http://localhost:${server.port}
+        predicates:
+        - Path=/v3/api-docs/**
+        filters:
+        - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: internal
+        url: /v3/api-docs/internal
+
+--- 
+spring:
+  config:
+    activate:
+      on-profile:
+      - localhost
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://richard:richard@localhost:1001/eureka/
+
+--- 
+spring:
+  config:
+    activate:
+      on-profile:
+      - development
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://richard:richard@richardvu.com:8020/eureka/
+
+--- 
+spring:
+  config:
+    activate:
+      on-profile:
+      - production
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://richard:richard@richardvu.com:8022/eureka/
+springdoc:
+  swagger-ui:
+    enabled: false
